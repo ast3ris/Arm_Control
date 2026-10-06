@@ -13,8 +13,8 @@ const int pinServo1 = 18;
 const int pinServo2 = 19;
 const int pinServo3 = 21;
 
-// Sudut awal (posisi default 90 derajat)
-int angle1 = 90;
+// Sudut awal: S1=0° (Box Tertutup), S2=90° (Arm Joint), S3=90 (Servo 360 STOP)
+int angle1 = 0;
 int angle2 = 90;
 int angle3 = 90;
 
@@ -45,11 +45,11 @@ void setCORS() {
 
 void handleRoot() {
   setCORS();
-  String html = "<html><body style='font-family:sans-serif;text-align:center;padding:30px;'>";
-  html += "<h2>ESP32 3-Axis Servo Arm Siap!</h2>";
-  html += "<p>Servo 1 (Pin 18): <b>" + String(angle1) + "&deg;</b></p>";
-  html += "<p>Servo 2 (Pin 19): <b>" + String(angle2) + "&deg;</b></p>";
-  html += "<p>Servo 3 (Pin 21): <b>" + String(angle3) + "&deg;</b></p>";
+  String html = "<html><body style='font-family:sans-serif;text-align:center;padding:30px;background:#090d16;color:#fff;'>";
+  html += "<h2 style='color:#00f0ff;'>ESP32 3-Axis Servo Arm Siap!</h2>";
+  html += "<p>Servo 1 (Pin 18 - Pengangkat Box): <b>" + String(angle1) + "&deg;</b> (0&deg; Tutup / 30&deg; Buka)</p>";
+  html += "<p>Servo 2 (Pin 19 - Arm Joint): <b>" + String(angle2) + "&deg;</b></p>";
+  html += "<p>Servo 3 (Pin 21 - Servo 360 Bawah): <b>" + String(angle3) + "&deg;</b> (90 = STOP)</p>";
   html += "</body></html>";
   server.send(200, "text/html", html);
 }
