@@ -13,7 +13,7 @@ const int pinServo1 = 18;
 const int pinServo2 = 19;
 const int pinServo3 = 21;
 
-// Sudut awal: S1=0° (Box Tertutup), S2=90° (Arm Joint), S3=90 (Servo 360 STOP)
+// Sudut awal: S1=0° (Box Tertutup), S2=90° (Arm Joint), S3=90° (Servo Bawah 180° - Posisi Tengah)
 int angle1 = 0;
 int angle2 = 90;
 int angle3 = 90;
@@ -47,9 +47,9 @@ void handleRoot() {
   setCORS();
   String html = "<html><body style='font-family:sans-serif;text-align:center;padding:30px;background:#090d16;color:#fff;'>";
   html += "<h2 style='color:#00f0ff;'>ESP32 3-Axis Servo Arm Siap!</h2>";
-  html += "<p>Servo 1 (Pin 18 - Pengangkat Box): <b>" + String(angle1) + "&deg;</b> (0&deg; Tutup / 30&deg; Buka)</p>";
-  html += "<p>Servo 2 (Pin 19 - Arm Joint): <b>" + String(angle2) + "&deg;</b></p>";
-  html += "<p>Servo 3 (Pin 21 - Servo 360 Bawah): <b>" + String(angle3) + "&deg;</b> (90 = STOP)</p>";
+  html += "<p>Servo 1 (Pin 18 - Pengangkat Box): <b>" + String(angle1) + "&deg;</b> (30&deg; Buka / 0&deg; Tutup)</p>";
+  html += "<p>Servo 2 (Pin 19 - Arm Joint): <b>" + String(angle2) + "&deg;</b> (0&deg; - 180&deg;)</p>";
+  html += "<p>Servo 3 (Pin 21 - Servo Bawah 180&deg;): <b>" + String(angle3) + "&deg;</b> (0&deg; - 180&deg;)</p>";
   html += "</body></html>";
   server.send(200, "text/html", html);
 }
@@ -84,24 +84,13 @@ void moveServo(int sNum, int val) {
     servo2.write(angle2);
     Serial.printf("-> Servo 2 (Pin 19) = %d°\n", angle2);
   } else if (sNum == 3) {
-    angle3 = val;
-    if (val == 90) {
-      // Jika sinyal STOP (90), matikan pulsa PWM agar servo 360 diam total 100% tanpa merayap!
-      servo3.write(90);
-      delay(20);
-      if (s3Attached) {
-        servo3.detach();
-        s3Attached = false;
-      }
-      Serial.println("-> Servo 3 (Pin 21) = STOP & DETACHED (Diam Total)");
-    } else {
-      if (!s3Attached) {
-        servo3.attach(pinServo3, 544, 2400);
-        s3Attached = true;
-      }
-      servo3.write(angle3);
-      Serial.printf("-> Servo 3 (Pin 21) = %d°\n", angle3);
+    if (!s3Attached) {
+      servo3.attach(pinServo3, 544, 2400);
+      s3Attached = true;
     }
+    angle3 = val;
+    servo3.write(angle3);
+    Serial.printf("-> Servo 3 (Pin 21) = %d°\n", angle3);
   }
 }
 
